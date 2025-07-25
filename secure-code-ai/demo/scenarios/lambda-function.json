@@ -1,0 +1,19 @@
+{
+  "name": "Lambda Function for API",
+  "description": "Serverless function with security best practices",
+  "userRequest": "Create a Lambda function to handle API requests",
+  "resourceType": "LAMBDA_FUNCTION",
+  "commonVulnerabilities": [
+    "Overly permissive IAM roles",
+    "Missing environment variable encryption",
+    "No VPC configuration",
+    "Insufficient logging"
+  ],
+  "expectedSecurityEnhancements": [
+    "Least privilege IAM policies",
+    "KMS encryption for environment variables",
+    "VPC configuration for network isolation",
+    "CloudWatch logging and monitoring",
+    "Dead letter queue configuration"
+  ]
+}

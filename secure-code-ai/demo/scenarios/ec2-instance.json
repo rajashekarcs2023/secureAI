@@ -1,0 +1,21 @@
+{
+  "name": "EC2 Instance for Web Server",
+  "description": "Virtual machine setup with security hardening",
+  "userRequest": "Create an EC2 instance to host a web application",
+  "resourceType": "EC2_INSTANCE",
+  "commonVulnerabilities": [
+    "Default security groups",
+    "Unencrypted storage",
+    "Missing instance metadata protection",
+    "No monitoring",
+    "Overly permissive IAM roles"
+  ],
+  "expectedSecurityEnhancements": [
+    "Custom security groups with minimal access",
+    "Encrypted EBS volumes",
+    "IMDSv2 enforcement",
+    "CloudWatch monitoring",
+    "Instance profile with least privilege",
+    "Systems Manager for patch management"
+  ]
+}

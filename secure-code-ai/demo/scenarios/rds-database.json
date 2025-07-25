@@ -1,0 +1,21 @@
+{
+  "name": "RDS Database for User Data",
+  "description": "Database setup with security considerations",
+  "userRequest": "Create a PostgreSQL RDS database for storing user data",
+  "resourceType": "RDS_INSTANCE",
+  "commonVulnerabilities": [
+    "Public accessibility",
+    "Weak password policy",
+    "Missing encryption",
+    "No backup retention",
+    "Overly permissive security groups"
+  ],
+  "expectedSecurityEnhancements": [
+    "Private subnet placement",
+    "Strong password generation",
+    "Encryption at rest and in transit",
+    "Automated backups",
+    "Restricted security groups",
+    "Parameter group hardening"
+  ]
+}

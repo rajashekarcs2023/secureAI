@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SecureCodeAI - AI-Powered Secure Code Generation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    <style>
+        .code-editor {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-100">
+    <div class="min-h-screen">
+        <!-- Header -->
+        <header class="bg-gray-800 border-b border-gray-700 px-6 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <i data-lucide="shield" class="w-8 h-8 text-blue-400"></i>
+                    <h1 class="text-2xl font-bold">SecureCodeAI</h1>
+                    <span class="text-sm text-gray-400">AI-Powered Secure Code Generation</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2 bg-green-900/20 px-3 py-1 rounded-full border border-green-400/30">
+                        <i data-lucide="check-circle" class="w-4 h-4 text-green-400"></i>
+                        <span class="text-sm text-green-400">Wiz Connected</span>
+                    </div>
+                    <button class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg text-sm font-medium">
+                        Run Demo
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="flex h-screen">
+            <!-- Left Panel - Input -->
+            <div class="w-1/3 bg-gray-800 border-r border-gray-700 p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center">
+                    <i data-lucide="edit-3" class="w-5 h-5 mr-2 text-blue-400"></i>
+                    Code Request
+                </h2>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">What would you like to create?</label>
+                        <textarea 
+                            id="userRequest"
+                            class="w-full h-24 bg-gray-700 border border-gray-600 rounded-lg p-3 text-sm resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                            placeholder="e.g., Create an S3 bucket for user uploads"
+                        >Create an S3 bucket for user uploads</textarea>
+                    </div>
+                    
+                    <button 
+                        onclick="generateCode()"
+                        class="w-full bg-blue-600 hover:bg-blue-700 py-3 rounded-lg font-medium flex items-center justify-center space-x-2"
+                    >
+                        <i data-lucide="zap" class="w-4 h-4"></i>
+                        <span>Generate Secure Code</span>
+                    </button>
+                </div>
+
+                <!-- Security Context -->
+                <div class="mt-8">
+                    <h3 class="text-md font-semibold mb-3 flex items-center">
+                        <i data-lucide="alert-triangle" class="w-4 h-4 mr-2 text-orange-400"></i>
+                        Security Context
+                    </h3>
+                    
+                    <div class="bg-gray-700 rounded-lg p-4 space-y-3">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-300">Total Issues:</span>
+                            <span class="text-red-400 font-medium">12</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-300">Critical Issues:</span>
+                            <span class="text-red-400 font-medium">3</span>
+                        </div>
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-300">S3 Vulnerabilities:</span>
+                            <span class="text-orange-400 font-medium">5</span>
+                        </div>
+                        
+                        <div class="pt-2 border-t border-gray-600">
+                            <p class="text-xs text-gray-400 mb-2">Common Patterns:</p>
+                            <div class="flex flex-wrap gap-1">
+                                <span class="bg-red-900/30 text-red-300 px-2 py-1 rounded text-xs">Public Access</span>
+                                <span class="bg-orange-900/30 text-orange-300 px-2 py-1 rounded text-xs">Missing Encryption</span>
+                                <span class="bg-yellow-900/30 text-yellow-300 px-2 py-1 rounded text-xs">IAM Issues</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Panel - Code Comparison -->
+            <div class="flex-1 flex flex-col">
+                <!-- Tabs -->
+                <div class="bg-gray-800 border-b border-gray-700 px-6 py-3">
+                    <div class="flex space-x-6">
+                        <button 
+                            onclick="showTab('vanilla')"
+                            id="vanillaTab"
+                            class="tab-button px-4 py-2 rounded-lg text-sm font-medium bg-red-900/20 text-red-300 border border-red-400/30"
+                        >
+                            <i data-lucide="x-circle" class="w-4 h-4 mr-2 inline"></i>
+                            Vanilla AI Code
+                        </button>
+                        <button 
+                            onclick="showTab('secure')"
+                            id="secureTab"
+                            class="tab-button px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-gray-200"
+                        >
+                            <i data-lucide="shield-check" class="w-4 h-4 mr-2 inline"></i>
+                            SecureCodeAI Enhanced
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Code Display -->
+                <div class="flex-1 relative">
+                    <!-- Vanilla Code -->
+                    <div id="vanillaCode" class="code-panel absolute inset-0 bg-gray-900 p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-red-400">❌ Generic AI Output</h3>
+                            <div class="flex items-center space-x-2 text-sm text-red-300">
+                                <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+                                <span>Security Issues Detected</span>
+                            </div>
+                        </div>
+                        
+                        <pre class="code-editor bg-gray-800 rounded-lg p-4 text-sm overflow-auto h-96 border-l-4 border-red-500"><code id="vanillaCodeContent">resource "aws_s3_bucket" "user_uploads" {
+  bucket = "my-app-uploads"
+  acl    = "public-read"  # ⚠️ SECURITY RISK: Public access!
+  
+  tags = {
+    Name = "User Uploads"
+  }
+}</code></pre>
+
+                        <div class="mt-4 bg-red-900/20 border border-red-400/30 rounded-lg p-4">
+                            <h4 class="font-medium text-red-300 mb-2">🚨 Security Issues:</h4>
+                            <ul class="text-sm text-red-200 space-y-1">
+                                <li>• Public read access allows data exposure</li>
+                                <li>• No encryption configuration</li>
+                                <li>• Missing access controls</li>
+                                <li>• No versioning for data protection</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Secure Code -->
+                    <div id="secureCode" class="code-panel absolute inset-0 bg-gray-900 p-6 hidden">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-green-400">✅ SecureCodeAI Enhanced</h3>
+                            <div class="flex items-center space-x-2 text-sm text-green-300">
+                                <i data-lucide="shield-check" class="w-4 h-4"></i>
+                                <span>Security Optimized</span>
+                            </div>
+                        </div>
+                        
+                        <pre class="code-editor bg-gray-800 rounded-lg p-4 text-sm overflow-auto h-96 border-l-4 border-green-500"><code id="secureCodeContent"># Secure S3 bucket based on your org's security data
+resource "aws_s3_bucket" "user_uploads" {
+  bucket = "my-app-uploads-${random_id.bucket_suffix.hex}"
+  
+  tags = {
+    Name        = "User Uploads"
+    Environment = "production"
+    Security    = "encrypted"
+  }
+}
+
+# Block all public access
+resource "aws_s3_bucket_public_access_block" "user_uploads" {
+  bucket = aws_s3_bucket.user_uploads.id
+
+  block_public_acls       = true
+  block_public_policy     = true
+  ignore_public_acls      = true
+  restrict_public_buckets = true
+}
+
+# Enable encryption
+resource "aws_s3_bucket_server_side_encryption_configuration" "user_uploads" {
+  bucket = aws_s3_bucket.user_uploads.id
+
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = aws_kms_key.s3_key.arn
+      sse_algorithm     = "aws:kms"
+    }
+  }
+}
+
+# Enable versioning
+resource "aws_s3_bucket_versioning" "user_uploads" {
+  bucket = aws_s3_bucket.user_uploads.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+
+resource "random_id" "bucket_suffix" {
+  byte_length = 4
+}</code></pre>
+
+                        <div class="mt-4 bg-green-900/20 border border-green-400/30 rounded-lg p-4">
+                            <h4 class="font-medium text-green-300 mb-2">🛡️ Security Enhancements:</h4>
+                            <ul class="text-sm text-green-200 space-y-1">
+                                <li>• Blocked all public access based on org vulnerabilities</li>
+                                <li>• Added KMS encryption (required by policy)</li>
+                                <li>• Enabled versioning for data protection</li>
+                                <li>• Random suffix prevents bucket enumeration</li>
+                                <li>• Addresses 3 critical S3 issues in your environment</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel - Analysis -->
+            <div class="w-1/3 bg-gray-800 border-l border-gray-700 p-6">
+                <h2 class="text-lg font-semibold mb-4 flex items-center">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5 mr-2 text-green-400"></i>
+                    Security Analysis
+                </h2>
+
+                <!-- Metrics -->
+                <div class="space-y-4 mb-6">
+                    <div class="bg-gray-700 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm text-gray-300">Vulnerabilities Prevented</span>
+                            <span class="text-2xl font-bold text-green-400">5</span>
+                        </div>
+                        <div class="w-full bg-gray-600 rounded-full h-2">
+                            <div class="bg-green-500 h-2 rounded-full w-full"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-700 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm text-gray-300">Security Score Improvement</span>
+                            <span class="text-2xl font-bold text-blue-400">+42%</span>
+                        </div>
+                        <div class="w-full bg-gray-600 rounded-full h-2">
+                            <div class="bg-blue-500 h-2 rounded-full w-4/5"></div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-700 rounded-lg p-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <span class="text-sm text-gray-300">Compliance Score</span>
+                            <span class="text-2xl font-bold text-purple-400">95%</span>
+                        </div>
+                        <div class="w-full bg-gray-600 rounded-full h-2">
+                            <div class="bg-purple-500 h-2 rounded-full w-11/12"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Improvements List -->
+                <div class="space-y-3">
+                    <h3 class="text-md font-semibold text-gray-200">Key Improvements</h3>
+                    
+                    <div class="space-y-2">
+                        <div class="flex items-start space-x-3 p-3 bg-green-900/20 rounded-lg border border-green-400/30">
+                            <i data-lucide="shield" class="w-4 h-4 text-green-400 mt-0.5"></i>
+                            <div>
+                                <p class="text-sm font-medium text-green-300">Public Access Blocked</p>
+                                <p class="text-xs text-green-200">Prevents data exposure based on 12 public buckets found in your org</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-3 p-3 bg-blue-900/20 rounded-lg border border-blue-400/30">
+                            <i data-lucide="lock" class="w-4 h-4 text-blue-400 mt-0.5"></i>
+                            <div>
+                                <p class="text-sm font-medium text-blue-300">KMS Encryption Added</p>
+                                <p class="text-xs text-blue-200">Meets organizational encryption policy requirements</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-3 p-3 bg-purple-900/20 rounded-lg border border-purple-400/30">
+                            <i data-lucide="history" class="w-4 h-4 text-purple-400 mt-0.5"></i>
+                            <div>
+                                <p class="text-sm font-medium text-purple-300">Versioning Enabled</p>
+                                <p class="text-xs text-purple-200">Protects against accidental deletion and corruption</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-3 p-3 bg-orange-900/20 rounded-lg border border-orange-400/30">
+                            <i data-lucide="shuffle" class="w-4 h-4 text-orange-400 mt-0.5"></i>
+                            <div>
+                                <p class="text-sm font-medium text-orange-300">Random Naming</p>
+                                <p class="text-xs text-orange-200">Prevents bucket enumeration attacks</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="mt-6 space-y-2">
+                    <button class="w-full bg-green-600 hover:bg-green-700 py-2 rounded-lg text-sm font-medium flex items-center justify-center space-x-2">
+                        <i data-lucide="download" class="w-4 h-4"></i>
+                        <span>Download Secure Code</span>
+                    </button>
+                    <button class="w-full bg-gray-600 hover:bg-gray-700 py-2 rounded-lg text-sm font-medium flex items-center justify-center space-x-2">
+                        <i data-lucide="file-text" class="w-4 h-4"></i>
+                        <span>Generate Report</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        function showTab(tabName) {
+            // Hide all panels
+            document.querySelectorAll('.code-panel').forEach(panel => {
+                panel.classList.add('hidden');
+            });
+            
+            // Show selected panel
+            document.getElementById(tabName + 'Code').classList.remove('hidden');
+            
+            // Update tab styles
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.className = 'tab-button px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-gray-200';
+            });
+            
+            if (tabName === 'vanilla') {
+                document.getElementById('vanillaTab').className = 'tab-button px-4 py-2 rounded-lg text-sm font-medium bg-red-900/20 text-red-300 border border-red-400/30';
+            } else {
+                document.getElementById('secureTab').className = 'tab-button px-4 py-2 rounded-lg text-sm font-medium bg-green-900/20 text-green-300 border border-green-400/30';
+            }
+        }
+
+        function generateCode() {
+            const request = document.getElementById('userRequest').value;
+            
+            // Simulate code generation
+            console.log('Generating code for:', request);
+            
+            // Show loading state
+            const button = event.target;
+            const originalText = button.innerHTML;
+            button.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin mr-2"></i>Generating...';
+            button.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                button.innerHTML = originalText;
+                button.disabled = false;
+                lucide.createIcons();
+                
+                // Show secure tab after generation
+                showTab('secure');
+            }, 2000);
+        }
+
+        // Initialize with vanilla tab
+        showTab('vanilla');
+    </script>
+</body>
+</html>

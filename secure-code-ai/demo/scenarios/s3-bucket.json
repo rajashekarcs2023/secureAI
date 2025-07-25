@@ -1,0 +1,16 @@
+{
+  "name": "S3 Bucket for User Uploads",
+  "description": "Common scenario where developers need file storage",
+  "userRequest": "Create an S3 bucket for storing user uploaded files",
+  "resourceType": "S3_BUCKET",
+  "commonVulnerabilities": ["Public read access", "Missing encryption", "No versioning", "Lack of access logging"],
+  "expectedSecurityEnhancements": [
+    "Block public access",
+    "Enable server-side encryption",
+    "Configure versioning",
+    "Add lifecycle policies",
+    "Implement access logging"
+  ],
+  "vanillaCode": "resource \"aws_s3_bucket\" \"uploads\" {\n  bucket = \"my-uploads\"\n  acl    = \"public-read\"\n}",
+  "secureCode": "resource \"aws_s3_bucket\" \"uploads\" {\n  bucket = \"my-uploads-${random_id.suffix.hex}\"\n}\n\nresource \"aws_s3_bucket_public_access_block\" \"uploads\" {\n  bucket = aws_s3_bucket.uploads.id\n  block_public_acls = true\n  block_public_policy = true\n  ignore_public_acls = true\n  restrict_public_buckets = true\n}\n\nresource \"aws_s3_bucket_server_side_encryption_configuration\" \"uploads\" {\n  bucket = aws_s3_bucket.uploads.id\n  rule {\n    apply_server_side_encryption_by_default {\n      sse_algorithm = \"AES256\"\n    }\n  }\n}"
+}
